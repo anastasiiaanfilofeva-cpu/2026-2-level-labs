@@ -7,7 +7,7 @@ Language detection
 # pylint:disable=unused-argument
 from typing import Sequence
 
-FreqDictType = dictsA[str, float]
+FreqDictType = dict[str, float]
 "Frequency dictionary. Contains pairs of token and its frequency."
 ProfileType = tuple[str, FreqDictType, int]
 "Language profile of a text. Contains language name, frequency dictionary and number of tokens."
@@ -28,7 +28,13 @@ def tokenize(text: str) -> Sequence[str] | None:
     """
     if not isinstance(text, str):
         return None
-
+    text = (text.lower())
+    cleaned_text = ""
+    for char in text:
+        if char.isalpha() or char.isspace():
+            cleaned_text += char
+    tokens = cleaned_text.split()
+    return tokens
 def remove_stop_words(tokens: Sequence[str], stop_words: Sequence[str]) -> Sequence[str] | None:
     """
     Removes stop words
