@@ -58,8 +58,7 @@ def add_numbers(a: int, b: int) -> int:
     Returns:
         int: Sum of a and b
     """
-    return a + b
-print(add_numbers(2,3))
+
 
 
 # add_numbers(2, 3) → 5
@@ -80,9 +79,7 @@ def average(a: float, b: float, c: float) -> float:
     Returns:
         float: Average value of the three numbers
     """
-    return (a + b + c) / 3
-av = average(10,20,30)
-print(av)
+
 
 # average(1, 2, 3) → 2.0
 # average(10, 20, 30) → 20.0
@@ -139,11 +136,6 @@ def factorial(n: int) -> int:
     Returns:
         int: Factorial of n
     """
-    result = 2
-    for i in range(1, n + 1):
-        result = result * i
-    return result
-print(factorial(3))
 
 
 # factorial(0) → 1
