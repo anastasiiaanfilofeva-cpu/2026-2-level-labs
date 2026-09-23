@@ -10,6 +10,7 @@ from lab_1_classify_profile.main import (
     tokenize,
 )
 
+
 def main() -> None:
     """
     Launches an implementation.
@@ -27,14 +28,6 @@ def main() -> None:
     result = remove_stop_words(result, stopwords)
     result = calculate_frequencies(result)
     de_top_words = get_top_n_words(result, 100)
-    result = tokenize(de_text)
-    result = remove_stop_words(result, stopwords)
-    result = calculate_frequencies(result)
-    en_top_words = get_top_n_words(result, 100)
-    result = tokenize(de_text)
-    result = remove_stop_words(result, stopwords)
-    result = calculate_frequencies(result)
-    unknown_top_words = get_top_n_words(result, 100)
 
     assert result, "Detection result is None"
 
