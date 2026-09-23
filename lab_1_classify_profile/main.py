@@ -74,7 +74,12 @@ def calculate_frequencies(tokens: Sequence[str]) -> dict[str, float] | None:
                 return None
     if not tokens:
         return {}
-    counts = Counter(tokens)
+    counts = {}
+    for token in tokens:
+        if token in counts:
+            counts[token] += 1
+        else:
+            counts[token] = 1
     total_count = len(tokens)
     return {token: count / total_count for token, count in counts.items()}
 
@@ -92,6 +97,14 @@ def get_top_n_words(freq_dict: dict[str, float], top_n: int) -> Sequence[str] | 
         Sequence[str] | None: Sequence of the most common words.
         Returns None in case of incorrect input types or non-positive top_n.
     """
+    if (
+            not isinstance(freq_dict, dict)
+            or not isinstance(top_n, int)
+            or top_n <= 0):
+            return None
+    sorted_words = sorted(freq_dict, key=freq_dict.get, reverse=True)
+    return sorted_words[:top_n]
+
 
 
 # Mark 6.
