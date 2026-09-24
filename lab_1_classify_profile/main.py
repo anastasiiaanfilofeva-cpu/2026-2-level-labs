@@ -46,7 +46,7 @@ def remove_stop_words(tokens: Sequence[str], stop_words: Sequence[str]) -> Seque
         Sequence[str] | None: Sequence of tokens without stop words.
         Returns None in case of incorrect input types.
     """
-    if not isinstance(tokens, list) or not isinstance(stop_words, list):
+    if not isinstance(tokens, (list, tuple)) or not isinstance(stop_words, (list, tuple)):
         return None
 
     filtered_tokens = []
@@ -102,6 +102,10 @@ def get_top_n_words(freq_dict: dict[str, float], top_n: int) -> Sequence[str] | 
             or not isinstance(top_n, int)
             or top_n <= 0):
             return None
+
+    def sort_key(word):
+        return (-freq_dict[word],word)
+
     sorted_words = sorted(freq_dict, key=freq_dict.get, reverse=True)
     return sorted_words[:top_n]
 
