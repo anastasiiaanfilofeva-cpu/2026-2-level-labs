@@ -1,5 +1,5 @@
 """
-Programming 2026.
+Programming 2025.
 
 Seminar 1.
 Running python application and debugging.
