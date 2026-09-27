@@ -46,7 +46,16 @@ def remove_stop_words(tokens: Sequence[str], stop_words: Sequence[str]) -> Seque
         Sequence[str] | None: Sequence of tokens without stop words.
         Returns None in case of incorrect input types.
     """
-    if not isinstance(tokens, (list, tuple)) or not isinstance(stop_words, (list, tuple)):
+    if not isinstance(tokens, (list, tuple)):
+        return None
+
+    if not all (isinstance(token, str) for token in tokens):
+        return None
+
+    if not isinstance(stop_words, (list, tuple)):
+        return None
+
+    if not all(isinstance(word, str) for word in stop_words):
         return None
 
     filtered_tokens = []
@@ -97,14 +106,19 @@ def get_top_n_words(freq_dict: dict[str, float], top_n: int) -> Sequence[str] | 
         Sequence[str] | None: Sequence of the most common words.
         Returns None in case of incorrect input types or non-positive top_n.
     """
-    if (
-            not isinstance(freq_dict, dict)
-            or not isinstance(top_n, int)
-            or top_n <= 0):
+    if  not isinstance(freq_dict, dict):
             return None
 
-    sorted_words = sorted(freq_dict, key=lambda word: (-freq_dict[word],word))
-    return sorted_words[:top_n]
+    if not isinstance(top_n, int) or top_n <= 0:
+            return None
+
+    items = list(freq_dict.items())
+    items = sorted(items, key=lambda item: (-item[1], item[0]))
+
+    result = []
+    for item in items[:top_n]:
+        result.append(item[0])
+    return result
 
 
 
