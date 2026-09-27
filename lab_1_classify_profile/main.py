@@ -28,7 +28,7 @@ def tokenize(text: str) -> Sequence[str] | None:
     """
     if not isinstance(text, str):
         return None
-    text = (text.lower())
+    text = text.lower()
     cleaned_text = ""
     for char in text:
         if char.isalpha() or char.isspace():
@@ -79,8 +79,8 @@ def calculate_frequencies(tokens: Sequence[str]) -> dict[str, float] | None:
         return None
 
     for token in tokens:
-            if not isinstance(token, str):
-                return None
+        if not isinstance(token, str):
+         return None
     if not tokens:
         return {}
     counts = {}
@@ -107,10 +107,10 @@ def get_top_n_words(freq_dict: dict[str, float], top_n: int) -> Sequence[str] | 
         Returns None in case of incorrect input types or non-positive top_n.
     """
     if  not isinstance(freq_dict, dict):
-            return None
+        return None
 
     if not isinstance(top_n, int) or top_n <= 0:
-            return None
+        return None
 
     items = list(freq_dict.items())
     items = sorted(items, key=lambda item: (-item[1], item[0]))
