@@ -23,13 +23,22 @@ def main() -> None:
         stopwords = file.read().split("\n")
     with open("lab_1_classify_profile/assets/texts/en.txt", "r", encoding="utf-8") as file:
         en_text = file.read()
+
     result = None
-    result = tokenize(de_text)
-    result = remove_stop_words(result, stopwords)
-    result = calculate_frequencies(result)
-    de_top_words = get_top_n_words(result, 100)
+
+    tokens = tokenize(de_text)
+    tokens_without_stopwords = remove_stop_words(tokens, stopwords)
+    frequencies = calculate_frequencies(tokens_without_stopwords)
+    result = get_top_n_words(frequencies, 7)
+
+    # result = tokenize(de_text)
+    # result = remove_stop_words(result, stopwords)
+    # result = calculate_frequencies(result)
+    # de_top_words = get_top_n_words(result, 7)
 
     assert result, "Detection result is None"
+
+    print(result)
 
 
 if __name__ == "__main__":
