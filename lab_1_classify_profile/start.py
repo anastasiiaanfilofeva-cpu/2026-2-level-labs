@@ -81,8 +81,6 @@ def main() -> None:
     assert result, "Detection result is None"
     return None
 
-    print(result)
-
 
 if __name__ == "__main__":
     main()
