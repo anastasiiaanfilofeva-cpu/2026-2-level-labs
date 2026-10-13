@@ -85,7 +85,15 @@ def count_tokens_pairs(
 
     In case of corrupt input arguments, None is returned
     """
+    if not isinstance(word_frequencies, dict ):
+        return None
+    pairs_frequencies = {}
 
+    for word, freq in word_frequencies.items():
+        for i in range(len(word) -1):
+            pair = (word[i], word[i + 1])
+            pairs_frequencies[pair] = pairs_frequencies.get(pair, 0) + freq
+    return pairs_frequencies
 
 def merge_tokens(
     word_frequencies: dict[tuple[str, ...], int], pair: tuple[str, str]
@@ -104,6 +112,24 @@ def merge_tokens(
 
     In case of corrupt input arguments, None is returned
     """
+    if not isinstance(word_frequencies, dict):
+        return None
+    if not isinstance(pair, tuple) or len(pair) !=2:
+        return None
+
+    new_word_frequencies = {}
+    for word, freq in word_frequencies.items():
+        new_word = []
+        i=0
+        while i < len(word):
+            if i < len(word) -1 and (word[i], word[i + 1]) == pair:
+                new_word.append(word[i] + word[i + 1])
+                i +=2
+            else:
+                new_word.append(word[i])
+                i += 1
+    new_word_frequencies[tuple(new_word)] = freq
+    return new_word_frequencies
 
 
 def train(
