@@ -183,10 +183,10 @@ print("*" * 15 + " TASKS " + "*" * 15)
 
 # Task 1
 # easy level
-class Deadline:
-     def __init__(self):
-          self.message = "Oh, no! It is another deadline!"
-          print(self.message)
+# class ...:
+#
+#     def __init__(...):
+#         ...
 
 # fill the gaps so that the next line prints: "Oh, no! It is another deadline!"
 # deadline = Deadline()
@@ -194,11 +194,10 @@ class Deadline:
 
 #  Task 2
 # easy level
-class Student:
-    def __init__(self, name: str,year: int):
-        self.name = name
-        self.year =year
-        print(f'Hello My name is {self.name}, im in year {self.year}')
+# class ...:
+#
+#     def ...:
+#         ...
 
 # fill the gaps so that the next lines print the corresponding messages
 # student1 = Student('Marina', 1)  # Hello! My name is Marina, I'm in year 1
@@ -207,15 +206,10 @@ class Student:
 
 # Task 3
 # easy level
-class Insect:
-
-    def __init__(self, name: str, legs: int):
-        self.name = name
-        self.legs = legs
-    def introduse(self):
-        print(f'Hi! My name is {self.name} and I have {self.legs} legs')
-bee = Insect('Bee' , 7)
-bee.introduse()
+# class Insect:
+#
+#     def __init__(...):
+#         ...
 #
 #     def introduce(self):
 #         print(f'Hi! My name is {self.name} and I have {self.legs} legs')
