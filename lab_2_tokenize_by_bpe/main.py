@@ -52,19 +52,26 @@ def collect_frequencies(
     In case of corrupt input arguments or functions used return None,
     None is returned
     """
-    if not (not isinstance(text, str) or not isinstance(start_of_word, str | None) or not isinstance(end_of_word, str)):
-
-            return None
+    if not isinstance(text, str):
+        return None
+    if not isinstance(start_of_word, str | None):
+        return None
+    if not isinstance(end_of_word, str):
+        return None
 
     frequent_words = {}
 
     for raw_word in text.split():
-        prepared_word = prepare_word(raw_word, start_of_word, end_of_word)
+        prepared_word = prepare_word(
+            raw_word, start_of_word, end_of_word
+        )
 
         if prepared_word is None:
             return None
 
-    frequent_words[prepared_word] = frequent_words.get(prepared_word, 0) +1
+        frequent_words[prepared_word] = (
+            frequent_words.get(prepared_word, 0) + 1
+        )
 
     return frequent_words
 
@@ -85,15 +92,6 @@ def count_tokens_pairs(
 
     In case of corrupt input arguments, None is returned
     """
-    if not isinstance(word_frequencies, dict ):
-        return None
-    pairs_frequencies = {}
-
-    for word, freq in word_frequencies.items():
-        for i in range(len(word) -1):
-            pair = (word[i], word[i + 1])
-            pairs_frequencies[pair] = pairs_frequencies.get(pair, 0) + freq
-    return pairs_frequencies
 
 def merge_tokens(
     word_frequencies: dict[tuple[str, ...], int], pair: tuple[str, str]
@@ -112,25 +110,6 @@ def merge_tokens(
 
     In case of corrupt input arguments, None is returned
     """
-    if not isinstance(word_frequencies, dict):
-        return None
-    if not isinstance(pair, tuple) or len(pair) !=2:
-        return None
-
-    new_word_frequencies = {}
-    for word, freq in word_frequencies.items():
-        new_word = []
-        i=0
-        while i < len(word):
-            if i < len(word) -1 and (word[i], word[i + 1]) == pair:
-                new_word.append(word[i] + word[i + 1])
-                i +=2
-            else:
-                new_word.append(word[i])
-                i += 1
-    new_word_frequencies[tuple(new_word)] = freq
-    return new_word_frequencies
-
 
 def train(
     word_frequencies: dict[tuple[str, ...], int] | None, num_merges: int
@@ -150,41 +129,6 @@ def train(
     In case of corrupt input arguments or functions used return None,
     None is returned
     """
-    if not isinstance(word_frequencies, dict):
-            return None
-    if not isinstance(num_merges, int) or num_merges <0 :
-            return None
-    for i in range(num_merges):
-            pairs = count_tokens_pairs(word_frequencies)
-    if pairs is None: return None
-    if len(pairs) == 0:
-       break
-
-    max_frequency = max(pairs.values())
-    best_pairs = []
-
-    for pair in pairs:
-            if pairs[pair] == max_frequency:
-                best_pairs.append(pair)
-    best_pair = best_pairs[0]
-
-    for pair in best_pairs:
-            token = pair[0] + pair[1]
-            best_token = best_pair[0] + best_pair[1]
-
-    if len(token) > len(best_token):
-         best_pair = pair
-    elif len(token) == len(best_token):
-            if token < best_token:
-                best_pair = pair
-
-    word_frequencies = merge_tokens(word_frequencies, best_pair)
-    if word_frequencies is None:
-            return None
-    return word_frequencies
-
-
-
 
 def get_vocabulary(
     word_frequencies: dict[tuple[str, ...], int], unknown_token: str
