@@ -150,6 +150,40 @@ def train(
     In case of corrupt input arguments or functions used return None,
     None is returned
     """
+    if not isinstance(word_frequencies, dict):
+            return None
+    if not isinstance(num_merges, int) or num_merges <0 :
+            return None
+    for i in range(num_merges):
+            pairs = count_tokens_pairs(word_frequencies)
+    if pairs is None: return None
+    if len(pairs) == 0:
+       break
+
+    max_frequency = max(pairs.values())
+    best_pairs = []
+
+    for pair in pairs:
+            if pairs[pair] == max_frequency:
+                best_pairs.append(pair)
+    best_pair = best_pairs[0]
+
+    for pair in best_pairs:
+            token = pair[0] + pair[1]
+            best_token = best_pair[0] + best_pair[1]
+
+    if len(token) > len(best_token):
+         best_pair = pair
+    elif len(token) == len(best_token):
+            if token < best_token:
+                best_pair = pair
+
+    word_frequencies = merge_tokens(word_frequencies, best_pair)
+    if word_frequencies is None:
+            return None
+    return word_frequencies
+
+
 
 
 def get_vocabulary(
@@ -168,7 +202,6 @@ def get_vocabulary(
 
     In case of corrupt input arguments, None is returned
     """
-
 
 def decode(
     encoded_text: Sequence[int] | None,
