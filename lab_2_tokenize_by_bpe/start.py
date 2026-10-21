@@ -11,18 +11,20 @@ def main() -> None:
     """
     Launches an implementation
     """
-    with open("lab_2_tokenize_by_bpe/assets/text.txt", "r", encoding="utf-8") as text_file:
+    with open("assets/text.txt", "r", encoding="utf-8") as text_file:
         text = text_file.read()
-    with open("lab_2_tokenize_by_bpe/assets/en_raw.txt", "r", encoding="utf-8") as text_file:
+    with open("assets/en_raw.txt", "r", encoding="utf-8") as text_file:
         text_reference_translation = text_file.read()
-    with open("lab_2_tokenize_by_bpe/assets/en_encoded.txt", "r", encoding="utf-8") as text_file:
+    with open("assets/en_encoded.txt", "r", encoding="utf-8") as text_file:
         translation_encoded_raw = text_file.read()
 
     result = collect_frequencies(text, None, "</s>")
     assert result is not None, "Frequency collection failed"
 
-    print(result)
+    result = collect_frequencies(text, None, "</s>")
+    assert result is not None, "Frequency collection failed"
 
+    print(result)
 
 if __name__ == "__main__":
     main()
