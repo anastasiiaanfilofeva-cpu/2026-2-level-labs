@@ -174,6 +174,7 @@ def merge_tokens(
 
     return new_word_frequencies
 
+
 def train(
     word_frequencies: dict[tuple[str, ...], int] | None, num_merges: int
 ) -> dict[tuple[str, ...], int] | None:
@@ -220,6 +221,7 @@ def train(
             return None
 
     return word_frequencies
+
 
 
 def get_vocabulary(
