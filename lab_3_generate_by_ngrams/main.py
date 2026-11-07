@@ -43,6 +43,9 @@ class TextProcessor:
         In case of corrupt input arguments, None is returned.
         In case any of methods used return None, None is returned.
         """
+        if not isinstance(text: str):
+            return None
+        
         text = text.lower()
         tokens = []
         word =  ''
@@ -51,6 +54,7 @@ class TextProcessor:
                 word += char
             elif char.isdigit():
                 continue
+
     def get_id(self, element: str) -> int | None:
         """
         Retrieve a unique identifier of an element.
@@ -117,6 +121,9 @@ class TextProcessor:
         In case of corrupt input arguments, None is returned.
         In case any of methods used return None, None is returned.
         """
+        if not isinstance(text,str):
+            return None
+        
         tokens = self._tokenize(text)
 
         if tokens is None:
@@ -186,7 +193,7 @@ class TextProcessor:
 
         text = ' '.join(text.split())
 
-        if text == ' ':
+        if text == ' ' or not text:
             return None
 
         text = text[0]. upper() + text[1:]
@@ -420,7 +427,7 @@ class NGramLanguageModel:
         """
         self._encoded_corpus = encoded_corpus
         self.__n_gram_size = n_gram_size
-        self.__n_gram_frequencies = {} 
+        self._n_gram_frequencies = {} 
 
     def get_n_gram_size(self) -> int:  # type: ignore[empty-body]
         """
@@ -438,7 +445,7 @@ class NGramLanguageModel:
         Args:
             frequencies (dict): Computed in advance frequencies for n-grams
         """
-        self.__n_gram_frequencies = frequencies
+        self._n_gram_frequencies = frequencies
 
     def build(self) -> bool:
         """
@@ -476,7 +483,7 @@ class NGramLanguageModel:
 
             frequencies[n_gram] = probability 
 
-        self.__n_gram_frequencies = frequencies
+        self._n_gram_frequencies = frequencies
 
         return True
    
@@ -502,7 +509,7 @@ class NGramLanguageModel:
 
         next_tokens = {}
 
-        for n_gram, probability in self.__n_gram_frequencies.items():
+        for n_gram, probability in self._n_gram_frequencies.items():
             if n_gram[:-1] == context:
                 next_token = n_gram[-1]
                 next_tokens[next_token] = probability

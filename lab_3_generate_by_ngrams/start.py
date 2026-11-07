@@ -1,7 +1,7 @@
 """
 Generation by NGrams starter
 """
-from .main import TextProcessor, WordProcessor
+from lab_3_generate_by_ngrams.main import TextProcessor, WordProcessor
 # pylint:disable=too-many-locals, unused-import, unused-variable
 
 
