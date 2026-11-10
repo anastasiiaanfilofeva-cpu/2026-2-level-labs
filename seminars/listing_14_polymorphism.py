@@ -4,8 +4,7 @@ Programming 2026.
 Seminar 13.
 
 Polymorphism.
-"""
-
+"""    
 # Animal
 ## Attributes
 ### eating_type (predator, herbivore)
@@ -17,8 +16,7 @@ Polymorphism.
 ### sleep
 ## Magic Methods
 ### __str__
-
-# Dog
+#Dog
 ## Attributes
 ### eating_type (predator)
 ### tamed (wild, domesticated)

@@ -43,7 +43,7 @@ class TextProcessor:
         In case of corrupt input arguments, None is returned.
         In case any of methods used return None, None is returned.
         """
-        if not isinstance(text: str):
+        if not isinstance (text, str):
             return None
         
         text = text.lower()
@@ -54,6 +54,8 @@ class TextProcessor:
                 word += char
             elif char.isdigit():
                 continue
+
+
 
     def get_id(self, element: str) -> int | None:
         """
@@ -333,7 +335,7 @@ class WordProcessor(TextProcessor):
             else:
                 if word:
                     if char in '.!?':
-                        word += self.end_of_word_token
+                        word += self._end_of_word_token
 
                     tokens.append(word)
                     word='' 
@@ -565,6 +567,8 @@ class GreedyTextGenerator:
             language_model (NGramLanguageModel): A language model to use for text generation
             text_processor (TextProcessor): A TextProcessor instance to handle text processing
         """
+        self._model = language_model
+        self._text_processor = text_processor
 
     def run(self, prompt: str, seq_len: int) -> str | None:
         """
@@ -580,7 +584,32 @@ class GreedyTextGenerator:
         In case of corrupt input arguments or methods used return None,
         None is returned
         """
+        if not isinstance(prompt, str):
+            return None
 
+        if not isinstance(seq_len, int) or isinstance(seq_len) or isinstance(seq_len, bool) or seq_len < 0:
+            return None
+
+        encoded_prompt = self._text_processor.encode(prompt)
+
+        if encoded_prompt is None:
+            return None
+
+        sequence = list(encoded_prompt)
+
+        for _ in range(seq_len):
+            next_tokens = self._model.generate_next_token(tuple(sequence))
+
+            if not next_tokens:
+                return None
+
+            next_token = max(next_tokens, key=next_tokens.get)
+
+            sequence.append(next_token)
+            
+        result = self._text_processor._decode(tuple(sequence))
+
+        return result
 
 class BeamSearcher:
     """
