@@ -587,7 +587,7 @@ class GreedyTextGenerator:
         if not isinstance(prompt, str):
             return None
 
-        if not isinstance(seq_len, int) or isinstance(seq_len) or isinstance(seq_len, bool) or seq_len < 0:
+        if not isinstance(seq_len, int) or isinstance(seq_len, bool) or seq_len < 0:
             return None
 
         encoded_prompt = self._text_processor.encode(prompt)
@@ -606,8 +606,8 @@ class GreedyTextGenerator:
             next_token = max(next_tokens, key=next_tokens.get)
 
             sequence.append(next_token)
-            
-        result = self._text_processor._decode(tuple(sequence))
+
+        result = self._text_processor.decode(tuple(sequence))
 
         return result
 
