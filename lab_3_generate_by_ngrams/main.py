@@ -55,7 +55,21 @@ class TextProcessor:
             elif char.isdigit():
                 continue
 
+            else:
+                if word:
+                    for letter in word:
+                        tokens.append(letter)
+                    tokens.append(self._end_of_word_token)
+                    word = ' '
 
+        if word:
+            for letter in word:
+                tokens.append(letter)
+            tokens.append(self._end_of_word_token)
+        if not tokens:
+            return None
+
+        return tuple(tokens)
 
     def get_id(self, element: str) -> int | None:
         """
@@ -101,9 +115,9 @@ class TextProcessor:
         if not isinstance(element_id, int) or isinstance(element_id, bool):
             return None
 
-        for element in self._storage:
-            if self._storage[element] == element_id:
-                    return element
+        for element, stored_id in self._storage.items():
+            if stored_id == element_id:
+                return element
 
         return None
 
@@ -203,7 +217,7 @@ class TextProcessor:
         if not text.endswith('.'):
             text += '.'
 
-        return text
+        return self._postprocess_decoded_text(decoded_tokens)
 
     def fill_from_ngrams(self, content: dict) -> None:
         """
@@ -273,25 +287,21 @@ class TextProcessor:
 
         for token in decoded_corpus:
             if token == self._end_of_word_token:
-                text += '.'
+                text += ' '
             else:
-                text += token + ' '
+                text += token
+
         text = ' '.join(text.split())
 
-        if text == '':
+        if not text:
             return None
 
-        sentences = text.split('.')
+        text = text[0].upper() + text[1:]
+        if not text.endswith('.'):
+            text += '.'
 
-        result = ''
-
-        for sentence in sentences:
-            sentence = sentence.strip()
-
-            if sentence:
-                result += sentence[0].upper() + sentence[1:] + '.'
-        return result.strip()
-
+        return text
+        
 class WordProcessor(TextProcessor):
     """
     Handle text tokenization, encoding and decoding on the level of words.
@@ -464,7 +474,7 @@ class NGramLanguageModel:
         if not isinstance(self._encoded_corpus, tuple) or not self._encoded_corpus: 
             return False
 
-        n_grams = self._extract_n_grams()
+        n_grams = self._extract_n_grams(self._encoded_corpus)
 
         if not isinstance(n_grams, tuple) or not n_grams:
             return False
@@ -479,10 +489,9 @@ class NGramLanguageModel:
 
         frequencies = {}
 
-        for n_gram in n_gram_counts:
+        for n_gram, count in n_gram_counts.items:
             context = n_gram[:-1]
-            probability = n_gram_counts[n_gram] / context_counts[context]
-
+            probability = count / context_counts[context]
             frequencies[n_gram] = probability 
 
         self._n_gram_frequencies = frequencies
