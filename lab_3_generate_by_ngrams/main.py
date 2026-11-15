@@ -45,7 +45,7 @@ class TextProcessor:
         """
         if not isinstance (text, str):
             return None
-        
+
         text = text.lower()
         tokens = []
         word =  ''
@@ -86,10 +86,8 @@ class TextProcessor:
         """
         if not isinstance(element, str) or len(element) != 1:
             return None
-        if element in self._storage:
-            return self._storage[element]
 
-        return None
+        return self._storage.get(element, None)
 
     def get_end_of_word_token(self) -> str:  # type: ignore[empty-body]
         """
@@ -139,7 +137,7 @@ class TextProcessor:
         """
         if not isinstance(text,str):
             return None
-        
+
         tokens = self._tokenize(text)
 
         if tokens is None:
@@ -301,7 +299,7 @@ class TextProcessor:
             text += '.'
 
         return text
-        
+
 class WordProcessor(TextProcessor):
     """
     Handle text tokenization, encoding and decoding on the level of words.
@@ -327,37 +325,26 @@ class WordProcessor(TextProcessor):
         In case of corrupt input arguments, None is returned.
         In case text does not contain any words, None is returned.
         """
-        if not isinstance(text,str): 
+        if not isinstance(text,str):
             return None
 
         text = text.lower()
-
         tokens = []
-        word = ''
 
-        for char in text:
-            if char.isalpha():
-                word += char
+        for word in text.split():
+            cleaned_word = "".join(letter for letter in word if letter.isalpha())
 
-            elif char.isdigit():
-                continue
+            if cleaned_word:
+                tokens.append(cleaned_word)
 
-            else:
-                if word:
-                    if char in '.!?':
-                        word += self._end_of_word_token
-
-                    tokens.append(word)
-                    word='' 
-
-        if word:
-            tokens.append(word)
+                if word[-1] in ".!?":
+                    tokens.append(self._end_of_word_token)
 
         if not tokens:
             return None
 
         return tuple(tokens)
-    
+
     def _put(self, element: str) -> None:
         """
         Put a word into the storage, assign a unique id to it.
@@ -407,11 +394,11 @@ class WordProcessor(TextProcessor):
 
         result = []
 
-        for sentence in sentences: 
+        for sentence in sentences:
             sentence = sentence.strip()
 
             if sentence:
-                sentence = sentences[0].upper() + sentences[1:] 
+                sentence = sentences[0].upper() + sentences[1:]
                 result.append(sentence)
 
         if not result:
@@ -439,7 +426,7 @@ class NGramLanguageModel:
         """
         self._encoded_corpus = encoded_corpus
         self.__n_gram_size = n_gram_size
-        self._n_gram_frequencies = {} 
+        self._n_gram_frequencies = {}
 
     def get_n_gram_size(self) -> int:  # type: ignore[empty-body]
         """
@@ -449,7 +436,7 @@ class NGramLanguageModel:
             int: Size of stored n_grams
         """
         return self.__n_gram_size
-    
+
     def set_n_grams(self, frequencies: dict) -> None:
         """
         Setter method for n-gram frequencies.
@@ -471,7 +458,7 @@ class NGramLanguageModel:
         In case of corrupt input arguments or methods used return None,
         False is returned
         """
-        if not isinstance(self._encoded_corpus, tuple) or not self._encoded_corpus: 
+        if not isinstance(self._encoded_corpus, tuple) or not self._encoded_corpus:
             return False
 
         n_grams = self._extract_n_grams(self._encoded_corpus)
@@ -492,12 +479,12 @@ class NGramLanguageModel:
         for n_gram, count in n_gram_counts.items:
             context = n_gram[:-1]
             probability = count / context_counts[context]
-            frequencies[n_gram] = probability 
+            frequencies[n_gram] = probability
 
         self._n_gram_frequencies = frequencies
 
         return True
-   
+
     def generate_next_token(self, sequence: tuple[int, ...]) -> dict | None:
         """
         Retrieve tokens that can continue the given sequence along with their probabilities.
@@ -513,7 +500,7 @@ class NGramLanguageModel:
         if not isinstance(sequence, tuple):
             return None
 
-        if not sequence: 
+        if not sequence:
             return None
 
         context = sequence[-(self.__n_gram_size - 1):]
@@ -530,7 +517,7 @@ class NGramLanguageModel:
             return None
 
         return next_tokens
-    
+
     def _extract_n_grams(
         self, encoded_corpus: tuple[int, ...]
     ) -> tuple[tuple[int, ...], ...] | None:
