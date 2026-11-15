@@ -6,7 +6,8 @@ from lab_3_generate_by_ngrams.main import (
    NGramLanguageModel,
    TextProcessor,
    WordProcessor,
-    )
+
+)
 # pylint:disable=too-many-locals, unused-import, unused-variable
 
 
