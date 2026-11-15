@@ -2,10 +2,10 @@
 Generation by NGrams starter
 """
 from lab_3_generate_by_ngrams.main import (
-    TextProcessor, 
-    WordProcessor, 
-    NGramLanguageModel, 
-    GreedyTextGenerator 
+    TextProcessor,
+    WordProcessor,
+    NGramLanguageModel,
+    GreedyTextGenerator
     )
 # pylint:disable=too-many-locals, unused-import, unused-variable
 
@@ -30,7 +30,7 @@ def main() -> None:
     encoded_text = processor.encode(text[:30])
     if  encoded_text is not None:
         decoded_text = processor.decode(encoded_text)
-    print(f"Decoded text: {decoded_text}")
+        print(f"Decoded text: {decoded_text}")
 
     processor = WordProcessor('</s>')
 
@@ -50,12 +50,12 @@ def main() -> None:
             generator = GreedyTextGenerator(model, ngram_processor)
             result_text = generator.run('Vernon', 51)
 
-            print(f"---Result generation (N=7, length=51) ---")
-            print(f"'Vernon'")
+            print("---Result generation (N=7, length=51) ---")
+            print("'Vernon'")
             print(f"Generated text: {result_text}")
         else:
             print("Model building failed")
-    else: 
+    else:
         print("Error")
 
 if __name__ == "__main__":
