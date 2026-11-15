@@ -247,7 +247,7 @@ class TextProcessor:
         In case of corrupt input arguments, None is returned.
         In case any of methods used return None, None is returned.
         """
-        if not isinstance(corpus, tuple):
+        if not isinstance(corpus, tuple) or not corpus:
             return None
 
         decoded_tokens = []
@@ -609,7 +609,7 @@ class GreedyTextGenerator:
         for _ in range(seq_len):
             next_tokens = self._model.generate_next_token(tuple(sequence))
 
-            if not next_tokens is None or not next_tokens:
+            if next_tokens is None or not next_tokens:
                 break
 
             if not isinstance(next_tokens, dict):
