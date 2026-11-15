@@ -2,10 +2,10 @@
 Generation by NGrams starter
 """
 from lab_3_generate_by_ngrams.main import (
-    TextProcessor,
-    WordProcessor,
-    NGramLanguageModel,
-    GreedyTextGenerator
+   GreedyTextGenerator,
+   NGramLanguageModel,
+   TextProcessor,
+   WordProcessor,
     )
 # pylint:disable=too-many-locals, unused-import, unused-variable
 
@@ -21,9 +21,7 @@ def main() -> None:
         "./lab_3_generate_by_ngrams/assets/Harry_Potter.txt", "r", encoding="utf-8"
     ) as text_file:
         text = text_file.read()
-
     result = None
-    assert result
 
     processor = TextProcessor('_')
 
@@ -58,5 +56,6 @@ def main() -> None:
     else:
         print("Error")
 
+    assert result
 if __name__ == "__main__":
     main()
