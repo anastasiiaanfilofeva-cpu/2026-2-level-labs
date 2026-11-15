@@ -36,7 +36,6 @@ class TextProcessor:
 
         Args:
             text (str): Original text
-
         Returns:
             tuple[str, ...] | None: Tokenized text
 
@@ -538,6 +537,16 @@ class NGramLanguageModel:
         """
         if not isinstance(encoded_corpus, tuple) or not encoded_corpus:
             return None
+        
+        if not isinstance(self.__n_gram_size, int):
+            return None
+
+        if isinstance(self.__n_gram_size, bool) or self.__n_gram_size < 2:
+            return None
+
+        if not all(isinstance(token,int) and not isinstance(token, bool)
+                   for token in encoded_corpus):
+            return None
 
         if len(encoded_corpus) < self.__n_gram_size:
             return None
@@ -584,10 +593,10 @@ class GreedyTextGenerator:
         In case of corrupt input arguments or methods used return None,
         None is returned
         """
-        if not isinstance(prompt, str):
+        if not isinstance(prompt, str) or not prompt:
             return None
 
-        if not isinstance(seq_len, int) or isinstance(seq_len, bool) or seq_len < 0:
+        if not isinstance(seq_len, int) or isinstance(seq_len, bool) or seq_len <= 0:
             return None
 
         encoded_prompt = self._text_processor.encode(prompt)
@@ -600,15 +609,22 @@ class GreedyTextGenerator:
         for _ in range(seq_len):
             next_tokens = self._model.generate_next_token(tuple(sequence))
 
-            if not next_tokens:
+            if not next_tokens is None or not next_tokens:
+                break
+
+            if not isinstance(next_tokens, dict):
                 return None
 
-            next_token = max(next_tokens, key=next_tokens.get)
+            next_token = max( 
+                next_tokens,
+                 key=lambda token: (next_tokens[token], token)
+            )
 
             sequence.append(next_token)
 
         result = self._text_processor.decode(tuple(sequence))
-
+        if result is None:
+            return None
         return result
 
 class BeamSearcher:
