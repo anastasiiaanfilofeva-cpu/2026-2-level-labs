@@ -470,13 +470,13 @@ class NGramLanguageModel:
         context_counts = {}
 
         for n_grams in n_grams:
-            n_gram_counts[n_gram] = n_gram_counts.get(n_gram, 0) + 1
-            context = n_gram[:-1]
-            context_counts[context] = context_counts.get(context, 0) + 1
+                n_gram_counts[n_gram] = n_gram_counts.get(n_gram, 0) + 1
+                context = n_gram[:-1]
+                context_counts[context] = context_counts.get(context, 0) + 1
 
         frequencies = {}
 
-        for n_gram, count in n_gram_counts.items:
+        for n_gram, count in n_gram_counts.items():
             context = n_gram[:-1]
             probability = count / context_counts[context]
             frequencies[n_gram] = probability
