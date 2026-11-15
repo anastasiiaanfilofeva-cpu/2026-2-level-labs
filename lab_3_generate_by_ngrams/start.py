@@ -56,6 +56,6 @@ def main() -> None:
     else:
         print("Error")
 
-    assert result
+    assert result_text
 if __name__ == "__main__":
     main()

@@ -52,6 +52,7 @@ class TextProcessor:
         for char in text:
             if char.isalpha():
                 word += char
+
             elif char.isdigit():
                 continue
 
@@ -59,13 +60,16 @@ class TextProcessor:
                 if word:
                     for letter in word:
                         tokens.append(letter)
+
                     tokens.append(self._end_of_word_token)
-                    word = ' '
+                    word = ''
 
         if word:
             for letter in word:
                 tokens.append(letter)
+
             tokens.append(self._end_of_word_token)
+
         if not tokens:
             return None
 
