@@ -2,12 +2,12 @@
 Generation by NGrams starter
 """
 from lab_3_generate_by_ngrams.main import (
-   GreedyTextGenerator,
-   NGramLanguageModel,
-   TextProcessor,
-   WordProcessor,
-
+    GreedyTextGenerator,
+    NGramLanguageModel,
+    TextProcessor,
+    WordProcessor,
 )
+
 # pylint:disable=too-many-locals, unused-import, unused-variable
 
 
