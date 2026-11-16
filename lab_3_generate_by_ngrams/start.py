@@ -31,14 +31,6 @@ def main() -> None:
         decoded_text = processor.decode(encoded_text)
         print(f"Decoded text: {decoded_text}")
 
-    processor = WordProcessor('</s>')
-
-    encoded_text = processor.encode(text[:100])
-    if encoded_text is not None:
-        decoded_text = processor.decode(encoded_text)
-    print(f"Decoded text: {decoded_text}")
-
-
     ngram_processor = TextProcessor('_')
     encoded_corpus = ngram_processor.encode(text)
 

@@ -87,10 +87,10 @@ class TextProcessor:
         In case of corrupt input arguments or arguments not included in storage,
         None is returned
         """
-        if not isinstance(element, str) or len(element) != 1:
+        if not isinstance(element, str) or not element:
             return None
 
-        return self._storage.get(element, None)
+        return self._storage.get(element)
 
     def get_end_of_word_token(self) -> str:  # type: ignore[empty-body]
         """
@@ -169,12 +169,12 @@ class TextProcessor:
         In case of corrupt input arguments or invalid argument length,
         an element is not added to storage
         """
-        if not isinstance(element, str) or len (element) != 1:
-            return
-
+        if not isinstance(element, str) or not element or len(element) != 1:
+            return None
         if element not in self._storage:
             self._storage[element] = len(self._storage)
 
+        return self._storage[element]
 
     def decode(self, encoded_corpus: tuple[int, ...]) -> str | None:
         """
@@ -192,33 +192,15 @@ class TextProcessor:
         In case of corrupt input arguments, None is returned.
         In case any of methods used return None, None is returned.
         """
-        if not isinstance(encoded_corpus, tuple):
+        if not isinstance(encoded_corpus, tuple) or not encoded_corpus:
             return None
 
-        decoded_tokens = self._decode(encoded_corpus)
+        decoded_corpus = self._decode(encoded_corpus)
 
-        if decoded_tokens is None:
+        if decoded_corpus is None:
             return None
 
-        text = ''
-
-        for token in decoded_tokens:
-            if token == self._end_of_word_token:
-                text += ' '
-            else:
-                text += token
-
-        text = ' '.join(text.split())
-
-        if text == ' ' or not text:
-            return None
-
-        text = text[0]. upper() + text[1:]
-
-        if not text.endswith('.'):
-            text += '.'
-
-        return self._postprocess_decoded_text(decoded_tokens)
+        return self._postprocess_decoded_text(decoded_corpus)
 
     def fill_from_ngrams(self, content: dict) -> None:
         """
@@ -328,25 +310,6 @@ class WordProcessor(TextProcessor):
         In case of corrupt input arguments, None is returned.
         In case text does not contain any words, None is returned.
         """
-        if not isinstance(text,str):
-            return None
-
-        text = text.lower()
-        tokens = []
-
-        for word in text.split():
-            cleaned_word = "".join(letter for letter in word if letter.isalpha())
-
-            if cleaned_word:
-                tokens.append(cleaned_word)
-
-                if word[-1] in ".!?":
-                    tokens.append(self._end_of_word_token)
-
-        if not tokens:
-            return None
-
-        return tuple(tokens)
 
     def _put(self, element: str) -> None:
         """
@@ -357,11 +320,6 @@ class WordProcessor(TextProcessor):
 
         In case of corrupt input arguments, an element is not added to storage
         """
-        if not isinstance(element, str) or not element:
-            return
-
-        if element not in  self._storage:
-            self._storage[element] = len(self._storage)
 
     def _postprocess_decoded_text(self, decoded_corpus: tuple[str, ...]) -> str | None:
         """
@@ -379,35 +337,6 @@ class WordProcessor(TextProcessor):
         In case of corrupt input arguments, None is returned.
         In case decoded corpus does not contain any words, None is returned.
         """
-        if not isinstance(decoded_corpus, tuple):
-            return  None
-
-        if not decoded_corpus:
-            return None
-
-        text = ''
-
-        for token in decoded_corpus:
-            if token == self._end_of_word_token:
-                text += '.'
-            else:
-                text+=token + ' '
-
-        sentences = text.split('.')
-
-        result = []
-
-        for sentence in sentences:
-            sentence = sentence.strip()
-
-            if sentence:
-                sentence = sentences[0].upper() + sentences[1:]
-                result.append(sentence)
-
-        if not result:
-            return None
-
-        return ' . '.join(result)+ '.'
 
 class NGramLanguageModel:
     """
