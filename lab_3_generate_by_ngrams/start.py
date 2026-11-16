@@ -1,12 +1,6 @@
 """
 Generation by NGrams starter
 """
-from lab_3_generate_by_ngrams.main import (
-    GreedyTextGenerator,
-    NGramLanguageModel,
-    TextProcessor,
-    WordProcessor,
-)
 
 # pylint:disable=too-many-locals, unused-import, unused-variable
 
@@ -27,7 +21,6 @@ def main() -> None:
 
     In any case returns, None is returned
     """
-    text = " "
     with open(
         "./lab_3_generate_by_ngrams/assets/Harry_Potter.txt", "r", encoding="utf-8"
     ) as text_file:
@@ -128,31 +121,6 @@ def main() -> None:
     result = backoff_generated
     assert result
 
-    processor = TextProcessor('_')
 
-    encoded_text = processor.encode(text[:30])
-    if  encoded_text is not None:
-        decoded_text = processor.decode(encoded_text)
-        print(f"Decoded text: {decoded_text}")
-
-    ngram_processor = TextProcessor('_')
-    encoded_corpus = ngram_processor.encode(text)
-
-    if encoded_corpus is not None:
-        model = NGramLanguageModel(encoded_corpus, 7)
-
-        if model.build():
-            generator = GreedyTextGenerator(model, ngram_processor)
-            result_text = generator.run('Vernon', 51)
-
-            print("---Result generation (N=7, length=51) ---")
-            print("'Vernon'")
-            print(f"Generated text: {result_text}")
-        else:
-            print("Model building failed")
-    else:
-        print("Error")
-
-    assert result_text
 if __name__ == "__main__":
     main()

@@ -45,6 +45,7 @@ class TextProcessor:
 
         Args:
             text (str): Original text
+
         Returns:
             tuple[str, ...] | None: Tokenized text
 
@@ -282,27 +283,6 @@ class TextProcessor:
 
         return decoded_element.capitalize() + "."
 
-        if len(decoded_corpus) == 0:
-            return None
-
-        text = ''
-
-        for token in decoded_corpus:
-            if token == self._end_of_word_token:
-                text += ' '
-            else:
-                text += token
-
-        text = ' '.join(text.split())
-
-        if not text:
-            return None
-
-        text = text[0].upper() + text[1:]
-        if not text.endswith('.'):
-            text += '.'
-
-        return text
 
 class WordProcessor(TextProcessor):
     """
@@ -403,6 +383,7 @@ class WordProcessor(TextProcessor):
             return None
 
         return f'{'. '.join(sentences)}.'
+
 
 class NGramLanguageModel:
     """
@@ -543,19 +524,6 @@ class NGramLanguageModel:
 
         return tuple(n_grams)
 
-        if not all(isinstance(token, int) for token in encoded_corpus):
-            return None
-
-        if len(encoded_corpus) < self.__n_gram_size:
-            return tuple()
-
-        n_grams = []
-
-        for index in range(len(encoded_corpus) - self.__n_gram_size + 1):
-            n_gram = encoded_corpus[index:index + self.__n_gram_size]
-            n_grams.append(n_gram)
-
-        return tuple(n_grams)
 
 class GreedyTextGenerator:
     """
@@ -611,27 +579,6 @@ class GreedyTextGenerator:
 
         return self._text_processor.decode(generated_sequence)
 
-        if not isinstance(seq_len, int) or seq_len <= 0:
-            return None
-
-        encoded_prompt = self._text_processor.encode(prompt)
-
-        if encoded_prompt is None:
-            return None
-
-        generated_sequence = list(encoded_prompt)
-
-        for _ in range(seq_len):
-            candidates = self._model.generate_next_token(tuple(generated_sequence))
-
-            if not candidates:
-                break
-
-            next_token = max(candidates, key=lambda token: (candidates[token], token))
-
-            generated_sequence.append(next_token)
-
-        return self._text_processor.decode(tuple(generated_sequence))
 
 class BeamSearcher:
     """
