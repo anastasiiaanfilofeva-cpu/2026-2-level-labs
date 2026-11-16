@@ -537,7 +537,6 @@ class NGramLanguageModel:
         """
         if not isinstance(encoded_corpus, tuple) or not encoded_corpus:
             return None
-        
         if not isinstance(self.__n_gram_size, int):
             return None
 
@@ -615,10 +614,10 @@ class GreedyTextGenerator:
             if not isinstance(next_tokens, dict):
                 return None
 
-            next_token = max( 
+            next_token = max(
                 next_tokens,
-                 key=lambda token: (next_tokens[token], token)
-            )
+                key=lambda token: (next_tokens[token], token)
+                )
 
             sequence.append(next_token)
 
