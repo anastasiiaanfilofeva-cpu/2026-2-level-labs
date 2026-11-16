@@ -467,34 +467,38 @@ class NGramLanguageModel:
         if not self._encoded_corpus:
             return False
 
-        if not isinstance(self.__n_gram_size, int):
-            return False
-
-        if isinstance(self.__n_gram_size, bool) or self.__n_gram_size < 2:
-            return False
-
         n_grams = self._extract_n_grams(self._encoded_corpus)
 
         if n_grams is None:
             return False
 
-        n_gram_counts = {}
-        context_counts ={}
+        if not n_grams:
+            return False
+
+        absolute_frequencies = {}
 
         for n_gram in n_grams:
-            n_gram_counts[n_gram] = n_gram_counts.get(n_gram, 0) + 1
+            if n_gram not in absolute_frequencies:
+                absolute_frequencies[n_gram] = 0
 
+            absolute_frequencies[n_gram] += 1
+
+        context_frequencies = {}
+
+        for n_gram in n_grams:
             context = n_gram[:-1]
-            context_counts[context] = context_counts.get(context, 0) + 1
 
-        frequencies = {}
+            if context not in context_frequencies:
+                context_frequencies[context] = 0
 
-        for n_gram, count in n_gram_counts.items():
+            context_frequencies[context] += 1
+
+        self._n_gram_frequencies = {}
+
+        for n_gram, frequency in absolute_frequencies.items():
             context = n_gram[:-1]
-            probability = count / context_counts[context]
-            frequencies[n_gram] = probability
 
-        self._n_gram_frequencies = frequencies
+            self._n_gram_frequencies[n_gram] = (frequency / context_frequencies[context])
 
         return True
 
@@ -513,31 +517,22 @@ class NGramLanguageModel:
         if not isinstance(sequence, tuple) or not sequence:
             return None
 
-        if not all(
-            isinstance(token, int) and not isinstance(token, bool)
-            for token in sequence
-        ):
+        if not all(isinstance(token, int) for token in sequence):
             return None
 
-        if not isinstance(self.__n_gram_size, int):
+        context_size = self.__n_gram_size - 1
+
+        if len(sequence) < context_size:
             return None
 
-        if isinstance(self.__n_gram_size, bool) or self.__n_gram_size < 2:
-            return None
-
-        context = sequence[-(self.__n_gram_size - 1):]
-
-        next_tokens = {}
+        context = sequence[-context_size:]
+        candidates = {}
 
         for n_gram, probability in self._n_gram_frequencies.items():
             if n_gram[:-1] == context:
-                next_token = n_gram[-1]
-                next_tokens[next_token] = probability
+                candidates[n_gram[-1]] = probability
 
-        if not next_tokens:
-            return None
-
-        return next_tokens
+        return candidates
 
     def _extract_n_grams(
         self, encoded_corpus: tuple[int, ...]
@@ -556,25 +551,16 @@ class NGramLanguageModel:
         if not isinstance(encoded_corpus, tuple) or not encoded_corpus:
             return None
 
-        if not isinstance(self.__n_gram_size, int):
-            return None
-
-        if isinstance(self.__n_gram_size, bool) or self.__n_gram_size < 2:
-            return None
-
-        if not all(
-            isinstance(token, int) and not isinstance(token, bool)
-            for token in encoded_corpus
-        ):
+        if not all(isinstance(token, int) for token in encoded_corpus):
             return None
 
         if len(encoded_corpus) < self.__n_gram_size:
-            return None
+            return tuple()
 
         n_grams = []
 
-        for i in range(len(encoded_corpus) - self.__n_gram_size + 1):
-            n_gram = encoded_corpus[i:i + self.__n_gram_size]
+        for index in range(len(encoded_corpus) - self.__n_gram_size + 1):
+            n_gram = encoded_corpus[index:index + self.__n_gram_size]
             n_grams.append(n_gram)
 
         return tuple(n_grams)
