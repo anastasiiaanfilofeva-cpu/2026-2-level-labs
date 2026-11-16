@@ -461,19 +461,29 @@ class NGramLanguageModel:
         In case of corrupt input arguments or methods used return None,
         False is returned
         """
-        if not isinstance(self._encoded_corpus, tuple) or not self._encoded_corpus:
+        if not isinstance(self._encoded_corpus, tuple):
+            return False
+
+        if not self._encoded_corpus:
+            return False
+
+        if not isinstance(self.__n_gram_size, int):
+            return False
+
+        if isinstance(self.__n_gram_size, bool) or self.__n_gram_size < 2:
             return False
 
         n_grams = self._extract_n_grams(self._encoded_corpus)
 
-        if not isinstance(n_grams, tuple) or not n_grams:
+        if n_grams is None:
             return False
 
         n_gram_counts = {}
-        context_counts = {}
+        context_counts ={}
 
         for n_gram in n_grams:
             n_gram_counts[n_gram] = n_gram_counts.get(n_gram, 0) + 1
+
             context = n_gram[:-1]
             context_counts[context] = context_counts.get(context, 0) + 1
 
@@ -500,10 +510,19 @@ class NGramLanguageModel:
 
         In case of corrupt input arguments, None is returned
         """
-        if not isinstance(sequence, tuple):
+        if not isinstance(sequence, tuple) or not sequence:
             return None
 
-        if not sequence:
+        if not all(
+            isinstance(token, int) and not isinstance(token, bool)
+            for token in sequence
+        ):
+            return None
+
+        if not isinstance(self.__n_gram_size, int):
+            return None
+
+        if isinstance(self.__n_gram_size, bool) or self.__n_gram_size < 2:
             return None
 
         context = sequence[-(self.__n_gram_size - 1):]
@@ -514,7 +533,6 @@ class NGramLanguageModel:
             if n_gram[:-1] == context:
                 next_token = n_gram[-1]
                 next_tokens[next_token] = probability
-
 
         if not next_tokens:
             return None
@@ -537,14 +555,17 @@ class NGramLanguageModel:
         """
         if not isinstance(encoded_corpus, tuple) or not encoded_corpus:
             return None
+
         if not isinstance(self.__n_gram_size, int):
             return None
 
         if isinstance(self.__n_gram_size, bool) or self.__n_gram_size < 2:
             return None
 
-        if not all(isinstance(token,int) and not isinstance(token, bool)
-                   for token in encoded_corpus):
+        if not all(
+            isinstance(token, int) and not isinstance(token, bool)
+            for token in encoded_corpus
+        ):
             return None
 
         if len(encoded_corpus) < self.__n_gram_size:
