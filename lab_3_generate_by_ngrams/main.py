@@ -447,6 +447,9 @@ class NGramLanguageModel:
         Args:
             frequencies (dict): Computed in advance frequencies for n-grams
         """
+        if not isinstance(frequencies, dict) or not frequencies:
+            return None
+
         self._n_gram_frequencies = frequencies
 
     def build(self) -> bool:
@@ -501,6 +504,7 @@ class NGramLanguageModel:
             self._n_gram_frequencies[n_gram] = (frequency / context_frequencies[context])
 
         return True
+
 
     def generate_next_token(self, sequence: tuple[int, ...]) -> dict | None:
         """
@@ -602,7 +606,7 @@ class GreedyTextGenerator:
         if not isinstance(prompt, str) or not prompt:
             return None
 
-        if not isinstance(seq_len, int) or isinstance(seq_len, bool) or seq_len <= 0:
+        if not isinstance(seq_len, int) or seq_len <= 0:
             return None
 
         encoded_prompt = self._text_processor.encode(prompt)
@@ -610,28 +614,19 @@ class GreedyTextGenerator:
         if encoded_prompt is None:
             return None
 
-        sequence = list(encoded_prompt)
+        generated_sequence = list(encoded_prompt)
 
         for _ in range(seq_len):
-            next_tokens = self._model.generate_next_token(tuple(sequence))
+            candidates = self._model.generate_next_token(tuple(generated_sequence))
 
-            if next_tokens is None or not next_tokens:
+            if not candidates:
                 break
 
-            if not isinstance(next_tokens, dict):
-                return None
+            next_token = max(candidates, key=lambda token: (candidates[token], token))
 
-            next_token = max(
-                next_tokens,
-                key=lambda token: (next_tokens[token], token)
-                )
+            generated_sequence.append(next_token)
 
-            sequence.append(next_token)
-
-        result = self._text_processor.decode(tuple(sequence))
-        if result is None:
-            return None
-        return result
+        return self._text_processor.decode(tuple(generated_sequence))
 
 class BeamSearcher:
     """
